@@ -495,7 +495,6 @@ endif()
 # solvespace macOS package
 
 if(APPLE)
-    set(LIBOMP_LIB_PATH ${OpenMP_CXX_INCLUDE_DIRS}/../lib/libomp.dylib)
     set(LIBOMP_LINK_PATH "@executable_path/../Resources/libomp.dylib")
     set(LIBOMP_LINK_PATH_UTILS "@executable_path/SolveSpace.app/Contents/Resources/libomp.dylib")
     if(ENABLE_GUI)
@@ -503,10 +502,10 @@ if(APPLE)
             COMMAND cp -r ${CMAKE_BINARY_DIR}/Resources $<TARGET_BUNDLE_CONTENT_DIR:solvespace>
         )
         if(ENABLE_OPENMP)
-            execute_process(COMMAND install_name_tool -id ${LIBOMP_LINK_PATH} ${LIBOMP_LIB_PATH})
-            message("FROM " ${${LIBOMP_LIB_PATH}} "TO" $<TARGET_BUNDLE_CONTENT_DIR:solvespace>/Resources/libomp.dylib)
+            execute_process(COMMAND install_name_tool -id ${LIBOMP_LINK_PATH} libomp.dylib)
+            message("FROM libomp.dylib TO" $<TARGET_BUNDLE_CONTENT_DIR:solvespace>/Resources/libomp.dylib)
             add_custom_command(TARGET solvespace POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy ${LIBOMP_LIB_PATH} $<TARGET_BUNDLE_CONTENT_DIR:solvespace>/Resources/libomp.dylib
+                COMMAND ${CMAKE_COMMAND} -E copy ../libomp.dylib $<TARGET_BUNDLE_CONTENT_DIR:solvespace>/Resources/libomp.dylib
                 COMMAND install_name_tool -change ${LIBOMP_LINK_PATH} ${LIBOMP_LINK_PATH_UTILS} $<TARGET_FILE:solvespace-debugtool>
             )
         endif()
